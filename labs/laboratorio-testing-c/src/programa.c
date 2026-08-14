@@ -25,6 +25,5 @@ int main(void) {
     printf("\n");
     printf("Total:             $%d\n", carrito_total(&c));
     printf("Con 10%% descuento: $%d\n", carrito_descuento(carrito_total(&c), 10));
-
     return 0;
 }

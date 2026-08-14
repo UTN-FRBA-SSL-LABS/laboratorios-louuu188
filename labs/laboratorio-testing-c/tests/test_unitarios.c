@@ -68,6 +68,58 @@ void test_carrito_lleno(void) {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+ *  E1 — Tests de carrito_buscar
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+void test_buscar_producto_existente(void) {
+    printf("\n[buscar producto existente]\n");
+    Carrito c;
+    carrito_init(&c);
+
+    Producto p = {"Leche", 350, 1};
+    carrito_agregar(&c, p);
+
+    ASSERT_IGUAL(0, carrito_buscar(&c, "Leche"));
+}
+
+void test_buscar_producto_inexistente(void) {
+    printf("\n[buscar producto inexistente]\n");
+    Carrito c;
+    carrito_init(&c);
+
+    Producto p = {"Leche", 350, 1};
+    carrito_agregar(&c, p);
+
+    ASSERT_IGUAL(-1, carrito_buscar(&c, "Pan"));
+}
+
+void test_buscar_producto_otra_posicion(void) {
+    printf("\n[buscar producto en otra posicion]\n");
+    Carrito c;
+    carrito_init(&c);
+
+    Producto p1 = {"Leche", 350, 1};
+    Producto p2 = {"Pan", 200, 1};
+
+    carrito_agregar(&c, p1);
+    carrito_agregar(&c, p2);
+
+    ASSERT_IGUAL(1, carrito_buscar(&c, "Pan"));
+}
+
+void test_total_ignora_cantidad_cero(void) {
+    printf("\n[total: ignora cantidad 0]\n");
+
+    Carrito c;
+    carrito_init(&c);
+
+    Producto p = {"Leche", 350, 0};
+    carrito_agregar(&c, p);
+
+    ASSERT_IGUAL(0, carrito_total(&c));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
  *  main
  * ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -75,10 +127,15 @@ int main(void) {
     printf("=== Tests unitarios ===");
     test_carrito_nuevo();
     test_agregar_uno();
-    /* Descomentar a medida que agregues las funciones: */
-    test_total_precio_unitario(); 
-    test_total_con_cantidad();    
-    test_carrito_lleno();         
+    test_total_precio_unitario();
+    test_total_con_cantidad();
+    test_carrito_lleno();
+
+    test_buscar_producto_existente();
+    test_buscar_producto_inexistente();
+    test_buscar_producto_otra_posicion();
+    test_total_ignora_cantidad_cero();
+
     RESUMEN();
     return EXIT_CODE();
 }

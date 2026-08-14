@@ -30,4 +30,7 @@ int carrito_total(Carrito *c);
    porcentaje debe estar entre 0 y 100. */
 int carrito_descuento(int total, int porcentaje);
 
+/* Busca un producto por nombre. Devuelve su indice o -1 si no existe. */
+int carrito_buscar(Carrito *c, char *nombre);
+
 #endif

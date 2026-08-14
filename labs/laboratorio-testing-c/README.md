@@ -81,7 +81,7 @@ Vas a ver el carrito con tres productos y su total.
 > R: El programa NO coincide con el esperado. Imprime 2050
 
 ```
-TOTAL_PROGRAMA=2800
+TOTAL_PROGRAMA=2050
 ```
 _(escribí el número que imprimió el programa)_
 
@@ -427,6 +427,20 @@ Para ver los resultados:
 
 **E2** — Modificá `carrito_total` para que ignore productos con `cantidad <= 0`. Agregá un test que lo verifique.
 
-**E3** — Deliberadamente escribí un test que falle (ponés un valor incorrecto en `ASSERT_IGUAL`). Corré los tests y observá el mensaje de error. ¿Qué información da el framework? Luego revertí el cambio.
+**E3** — Deliberadamente escribí un test que falle (ponés un valor incorrecto en `ASSERT_IGUAL`). Corré los tests y observá el mensaje de error. ¿Qué información da el framework? Luego revertí el cambio. 
+
+Se modificó deliberadamente un ASSERT_IGUAL para que el test fallara, cambiando el valor esperado de 350 a 999. Al ejecutar los tests, se obtuvo:
+[FAIL] carrito_total(&c) => esperado 999, obtenido 350 (linea 35)
+El framework informa qué test falló, el valor esperado, el valor obtenido y la línea donde ocurrió el error. Luego se revirtió el cambio para que el test volviera a pasar.
 
 **E4** — Investigá qué es **TDD** (Test Driven Development). ¿En qué orden se escribe el código? ¿En qué se diferencia de lo que hiciste en este laboratorio?
+TDD (Test Driven Development) es una metodología de desarrollo en la que primero se escriben los tests y después se desarrolla el código necesario para que esos tests pasen.
+
+El orden es:
+Escribir el test → inicialmente falla.
+Escribir el código necesario para que el test pase.
+Ejecutar el test y comprobar que pasa.
+Refactorizar el código sin romper los tests.
+
+Este proceso se conoce como Red → Green → Refactor.
+Diferencia con este laboratorio: en el laboratorio ya teníamos código y algunos tests escritos. Primero ejecutamos los tests, encontramos los errores, corregimos los bugs y después agregamos nuevos tests. En TDD, en cambio, primero se escribe el test y recién después el código que implementa la funcionalidad.
