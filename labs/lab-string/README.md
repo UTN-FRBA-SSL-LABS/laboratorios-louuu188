@@ -277,7 +277,7 @@ Los tests de `IsEmpty` ya están activos en `StringTest.c`. Corré `make test` y
 
 **P1** — `IsEmpty` podría haberse escrito también como `return s[0] == '\0'`. ¿Son equivalentes? ¿Por qué?
 
-> R:
+> R: Sí, son semánticamente equivalentes. En C, la indexación s[i] está definida como *(s + i). Para i = 0, s[0] equivale exactamente a *(s + 0), que es *s.
 
 ---
 
@@ -328,14 +328,14 @@ make test
 
 **P2** — ¿Qué hace `s + 1`? ¿Por qué avanza al siguiente carácter y no al siguiente byte?
 
-> R:
+> R: Aplica aritmética de punteros. Como s es de tipo const char * y cada char ocupa exactamente 1 byte, sumarle 1 incrementa la dirección de memoria para apuntar al siguiente carácter de la cadena.
 
 **P3** — Si llamaras a `GetLength(NULL)`, ¿qué pasaría? ¿Por qué las precondiciones del contrato dicen `s != NULL`?
 
-> R:
+> R: Provocaría un Segmentation Fault (crash) por desreferenciar un puntero nulo al evaluar *s. Las precondiciones exigen s != NULL para garantizar que la función opere sobre una dirección de memoria válida.
 
 ```
-GETLENGTH_PASA=
+GETLENGTH_PASA=SI
 ```
 _(escribí SI cuando todos los tests de GetLength pasen)_
 
@@ -367,7 +367,7 @@ El `while` termina cuando alguna de las dos cadenas llega a `'\0'`. Después dev
 
 **P4** — ¿Qué dos casos están mal cubiertos por `return 1`? Describí un ejemplo para cada uno.
 
-> R:
+> R: 1) Cadenas de distinta longitud donde la más corta es prefijo de la más larga (ej. s1 = "hola", s2 = "holas"). 2) El caso inverso (ej. s1 = "mundo", s2 = "mun"). En ambos casos el bucle frenaba prematuramente al encontrar el primer '\0' y retornaba 1 indebidamente.
 
 #### Corrección
 
@@ -384,7 +384,7 @@ make test
 ```
 
 ```
-AREEQUAL_PASA=
+AREEQUAL_PASA=SI
 ```
 _(escribí SI cuando todos los tests de AreEqual pasen)_
 
@@ -414,7 +414,7 @@ int AreDecimalDigits(const char *s) {
 
 **P5** — ¿Por qué la cadena vacía no debería considerarse un conjunto de dígitos decimales? Pensalo desde la especificación matemática.
 
-> R:
+> R: Según la especificación matemática, la cadena vacía no contiene elementos que pertenezcan al conjunto de dígitos decimales ({'0'..'9'}); se requiere una longitud mínima de 1 carácter numérico (AreDecimalDigits(ε) = 0).
 
 #### Corrección
 
@@ -425,7 +425,7 @@ make test
 ```
 
 ```
-AREDECIMALDIGITS_PASA=
+AREDECIMALDIGITS_PASA=SI
 ```
 _(escribí SI cuando todos los tests de AreDecimalDigits pasen)_
 
@@ -452,7 +452,7 @@ make test
 ```
 
 ```
-CONTAINS_PASA=
+CONTAINS_PASA=SI
 ```
 _(escribí SI cuando todos los tests de Contains pasen)_
 
@@ -467,7 +467,7 @@ Antes de implementar, discutí con tu equipo:
 
 **P6** — Conclusión de la discusión:
 
-> R:
+> R: Es correcto mantenerla en un módulo separado (Conversion). Responde al principio de responsabilidad única (Single Responsibility Principle): String gestiona operaciones sobre el tipo cadena en sí, mientras que Conversion se ocupa de la transformación de tipos entre String y tipos numéricos primitivos (int).
 
 ---
 
@@ -494,7 +494,7 @@ int ToInteger(const char *s) {
 
 **P7** — El loop acumula correctamente el valor en `resultado`. ¿Qué está mal en el `return`?
 
-> R:
+> R: La instrucción de retorno devolvía únicamente la variable signo en lugar de retornar el valor numérico acumulado multiplicado por su signo (signo * resultado).
 
 #### Corrección
 
@@ -506,10 +506,10 @@ make test
 
 **P8** — La expresión `*s - '0'` convierte un carácter dígito al entero correspondiente. ¿Por qué funciona? ¿Qué devuelve `'3' - '0'`?
 
-> R:
+> R: Funciona porque la codificación ASCII asigna valores enteros consecutivos y contiguos a los caracteres del '0' al '9'. Al restar el carácter base '0' (código 48), la expresión '3' - '0' realiza la resta aritmética 51 - 48, devolviendo el entero 3.
 
 ```
-TOINTEGER_PASA=
+TOINTEGER_PASA=SI
 ```
 _(escribí SI cuando todos los tests de ToInteger pasen)_
 
@@ -562,7 +562,7 @@ foo
 
 **P9** — ¿Por qué `(void)argc` suprime un warning? ¿Cuándo sería necesario usar `argc`?
 
-> R:
+> R: Suprime el warning del compilador por parámetro sin usar (-Wunused-parameter). Sería necesario utilizar argc si necesitáramos verificar de antemano la cantidad exacta de argumentos provistos por línea de comandos antes de procesarlos.
 
 ---
 
@@ -589,7 +589,7 @@ Salida esperada:
 ```
 
 ```
-LONGITUDES_PASA=
+LONGITUDES_PASA=SI
 ```
 _(SI o NO)_
 
@@ -616,7 +616,7 @@ make mayorlongitud
 ```
 
 ```
-MAYORLONGITUD_PASA=
+MAYORLONGITUD_PASA=SI
 ```
 _(SI o NO)_
 
@@ -635,7 +635,7 @@ make todosiguales
 ```
 
 ```
-TODOSIGUALES_PASA=
+TODOSIGUALES_PASA=SI
 ```
 _(SI o NO)_
 
@@ -652,7 +652,7 @@ make suma
 ```
 
 ```
-SUMA_PASA=
+SUMA_PASA=SI
 ```
 _(SI o NO)_
 
@@ -662,15 +662,15 @@ _(SI o NO)_
 
 **P10** — `GetLength` es recursiva pero en C una llamada recursiva consume un stack frame. Si llamaras `GetLength` con un string de 1.000.000 de caracteres, ¿qué pasaría? ¿Cómo lo resolverías?
 
-> R:
+> R: Se produciría un Stack Overflow (desbordamiento de pila), ya que cada llamada recursiva añade un stack frame adicional hasta saturar el límite de memoria del stack. Se resuelve reescribiendo la función de forma iterativa mediante un bucle while o for.
 
 **P11** — En la Parte III, todos los programas usan `char **arg` para iterar en vez de un índice entero. ¿Qué ventaja tiene este estilo? ¿Cuándo sería preferible usar el índice?
 
-> R:
+> R: Es más idiomático en C, evita gestionar una variable índice entera adicional y aprovecha que el estándar garantiza que argv[argc] es un puntero NULL como terminador de secuencia. Sería preferible usar un índice entero si se requiere acceso aleatorio por posición o validar posiciones fijas.
 
 **P12** — En C, `"hola"` es un literal de tipo `const char *`. Si intentaras modificar un carácter con `s[0] = 'H'`, el comportamiento es indefinido. ¿Por qué? ¿En qué parte de la memoria viven los literales?
 
-> R:
+> R: Porque los literales de cadena se almacenan en secciones de memoria estática de solo lectura (como el segmento .rodata). Escribir sobre memoria protegida provoca una violación de acceso a nivel de sistema operativo y el estándar define la operación como comportamiento indefinido.
 
 ---
 
